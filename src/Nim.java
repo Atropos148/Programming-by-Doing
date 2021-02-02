@@ -21,13 +21,11 @@ public class Nim {
 
         int totalCoins = piles.get('A') + piles.get('B') + piles.get('C');
 
-        System.out.print("Player 1, enter your name > ");
-        String namePlayer1 = keyboard.nextLine();
-        System.out.print("Player 2, enter your name > ");
-        String namePlayer2 = keyboard.nextLine();
-
-        String currentPlayer = namePlayer1;
-        String otherPlayer = namePlayer2;
+        String[] playerNames = getPlayerNames(keyboard);
+        String currentPlayer = playerNames[0];
+        String namePlayer1 = currentPlayer;
+        String otherPlayer = playerNames[1];
+        String namePlayer2 = otherPlayer;
 
         while (piles.get('A') > 0 || piles.get('B') > 0 || piles.get('C') > 0) {
             showPiles(piles);
@@ -96,5 +94,14 @@ public class Nim {
             }
             System.out.printf("%s (%d): %s %n", pile.getKey(), pile.getValue(), visualAmount);
         }
+    }
+
+    static String[] getPlayerNames(Scanner keyboard) {
+        System.out.print("Player 1, enter your name > ");
+        String namePlayer1 = keyboard.nextLine();
+        System.out.print("Player 2, enter your name > ");
+        String namePlayer2 = keyboard.nextLine();
+        String[] playerNames = { namePlayer1, namePlayer2 };
+        return playerNames;
     }
 }
