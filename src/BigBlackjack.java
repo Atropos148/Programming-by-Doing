@@ -14,46 +14,83 @@ public class BigBlackjack {
         System.out.println("Player's hand:");
         showHand(playerHand, false);
         int playerHandTotal = countHandTotal(playerHand);
+        if (playerHandTotal > 21) {
+            System.out.printf("Your total is %d. Dealer wins.", playerHandTotal);
+            System.exit(0);
+        }
 
         System.out.println("Dealer's hand:");
         showHand(dealerHand, true);
         int dealerHandTotal = countHandTotal(dealerHand);
+        if (dealerHandTotal > 21) {
+            System.out.printf("Dealer's total is %d. You win!", dealerHandTotal);
+            System.exit(0);
+        }
 
         Scanner scanner = new Scanner(System.in);
         String playerAction = "";
         while (playerAction.equals("stay") == false) {
             System.out.println("Would you like to \"hit\" or \"stay\"?");
+
             playerAction = scanner.nextLine();
+
             if (playerAction.equals("hit")) {
                 Card drawnCard = drawCard(rand);
                 playerHand.add(drawnCard);
                 playerHandTotal = countHandTotal(playerHand);
                 System.out.printf("You drew a %d.%nYour total is %d.%n", drawnCard.value, playerHandTotal);
+
+                if (playerHandTotal > 21) {
+                    System.out.printf("Your total is %d. Dealer wins.%n", playerHandTotal);
+                    scanner.close();
+                    System.exit(0);
+                } else if (playerHandTotal == 21) {
+                    System.out.println("You win!");
+                    scanner.close();
+                    System.exit(0);
+                }
             } else if (playerAction.equals("stay") == false) {
                 System.out.println("You can only hit or stay.");
             }
         }
-        scanner.close();
 
-        System.out.println("Okay, it's dealer's turn now.");
-        System.out.printf("Their hidden card was a %d.%nTheir total is %d.%n", dealerHand.get(1).value,
-                dealerHandTotal);
+        if (playerHandTotal < 21) {
+            System.out.println("Okay, it's dealer's turn now.");
+            System.out.printf("Their hidden card was a %d.%nTheir total is %d.%n", dealerHand.get(1).value,
+                    dealerHandTotal);
 
-        while (dealerHandTotal <= 16) {
-            System.out.println("Dealer chooses to hit.");
-            Card drawnCard = drawCard(rand);
-            dealerHand.add(drawnCard);
-            dealerHandTotal = countHandTotal(dealerHand);
-            System.out.printf("Dealer drew a %d.%nTheir total is %d.%n", drawnCard.value, dealerHandTotal);
-        }
-        System.out.println("Dealer stays.");
+            while (dealerHandTotal <= 16) {
+                System.out.println("Dealer chooses to hit.");
+                Card drawnCard = drawCard(rand);
+                dealerHand.add(drawnCard);
+                dealerHandTotal = countHandTotal(dealerHand);
+                System.out.printf("Dealer drew a %d.%nTheir total is %d.%n", drawnCard.value, dealerHandTotal);
+                scanner.nextLine();
+                if (dealerHandTotal >= 21) {
+                    break;
+                }
+            }
 
-        System.out.printf("Your total is: %d%nDealer's total is: %d%n", playerHandTotal, dealerHandTotal);
+            if (dealerHandTotal > 21) {
+                System.out.printf("Dealer's total is %d. You win!%n", dealerHandTotal);
+                scanner.close();
+                System.exit(0);
+            } else if (dealerHandTotal == 21) {
+                System.out.println("Dealer wins.");
+                scanner.close();
+                System.exit(0);
+            }
 
-        if (playerHandTotal > dealerHandTotal) {
-            System.out.println("You win!");
-        } else {
-            System.out.println("Dealer wins.");
+            System.out.println("Dealer stays.");
+
+            System.out.printf("Your total is: %d%nDealer's total is: %d%n", playerHandTotal, dealerHandTotal);
+
+            if (playerHandTotal > dealerHandTotal) {
+                System.out.println("You win!");
+            } else {
+                System.out.println("Dealer wins.");
+            }
+            scanner.close();
         }
     }
 
