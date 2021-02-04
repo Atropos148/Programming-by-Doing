@@ -5,136 +5,129 @@ import java.util.Scanner;
 
 public class BigBlackjack {
     public static void main(String[] args) {
-        Random rand = new Random();
+        Scanner keyboard = new Scanner(System.in);
 
-        System.out.println("Welcome to Blackjack! Sponsored by @atropos148");
-        List<Card> playerHand = dealOpeningHand(rand);
-        List<Card> dealerHand = dealOpeningHand(rand);
+        System.out.printf("Welcome to BlackJack Night! Sponsored by @atropos148!%n%n");
 
-        System.out.println("Player's hand:");
-        showHand(playerHand, false);
-        int playerHandTotal = countHandTotal(playerHand);
-        if (playerHandTotal > 21) {
-            System.out.printf("Your total is %d. Dealer wins.", playerHandTotal);
-            System.exit(0);
-        }
+        Hand playerHand = new Hand(2);
+        playerHand.player = true;
+        Hand dealerHand = new Hand(2);
 
-        System.out.println("Dealer's hand:");
-        showHand(dealerHand, true);
-        int dealerHandTotal = countHandTotal(dealerHand);
-        if (dealerHandTotal > 21) {
-            System.out.printf("Dealer's total is %d. You win!", dealerHandTotal);
-            System.exit(0);
-        }
+        System.out.printf("You get a %d and a %d.%n", playerHand.cards.get(0).value, playerHand.cards.get(1).value);
+        System.out.printf("Your total is %d.%n%n", playerHand.currentTotal);
+        System.out.printf("Dealer gets a %d and a hidden card.%n", dealerHand.cards.get(0).value);
+        System.out.println("Dealer's total is also hidden.");
 
-        Scanner scanner = new Scanner(System.in);
-        String playerAction = "";
-        while (playerAction.equals("stay") == false) {
-            System.out.println("Would you like to \"hit\" or \"stay\"?");
+        checkImmediateWin(playerHand, dealerHand);
 
-            playerAction = scanner.nextLine();
-
-            if (playerAction.equals("hit")) {
-                Card drawnCard = drawCard(rand);
-                playerHand.add(drawnCard);
-                playerHandTotal = countHandTotal(playerHand);
-                System.out.printf("You drew a %d.%nYour total is %d.%n", drawnCard.value, playerHandTotal);
-
-                if (playerHandTotal > 21) {
-                    System.out.printf("Your total is %d. Dealer wins.%n", playerHandTotal);
-                    scanner.close();
-                    System.exit(0);
-                } else if (playerHandTotal == 21) {
-                    System.out.println("You win!");
-                    scanner.close();
-                    System.exit(0);
-                }
-            } else if (playerAction.equals("stay") == false) {
-                System.out.println("You can only hit or stay.");
+        // TODO playerLoop
+        String action;
+        do {
+            System.out.print("Would you like to hit or stay? > ");
+            action = keyboard.nextLine();
+            if (action.equals("hit")) {
+                takeTurn(action, playerHand);
+                checkImmediateWin(playerHand, dealerHand);
             }
-        }
+        } while (!action.equals("stay"));
 
-        if (playerHandTotal < 21) {
-            System.out.println("Okay, it's dealer's turn now.");
-            System.out.printf("Their hidden card was a %d.%nTheir total is %d.%n", dealerHand.get(1).value,
-                    dealerHandTotal);
+        if (action.equals("stay")) {
+            System.out.printf("Okay, it's dealer's turn now.%n%n");
+            System.out.printf("His hidden card was a %d.%nHis total is %d.%n%n",
+                    dealerHand.cards.get(dealerHand.cards.size() - 1).value, dealerHand.currentTotal);
+            keyboard.nextLine();
 
-            while (dealerHandTotal <= 16) {
+            do {
                 System.out.println("Dealer chooses to hit.");
-                Card drawnCard = drawCard(rand);
-                dealerHand.add(drawnCard);
-                dealerHandTotal = countHandTotal(dealerHand);
-                System.out.printf("Dealer drew a %d.%nTheir total is %d.%n", drawnCard.value, dealerHandTotal);
-                scanner.nextLine();
-                if (dealerHandTotal >= 21) {
-                    break;
-                }
-            }
+                takeTurn("hit", dealerHand);
+                keyboard.nextLine();
+                checkImmediateWin(playerHand, dealerHand);
+            } while (dealerHand.currentTotal <= 16);
 
-            if (dealerHandTotal > 21) {
-                System.out.printf("Dealer's total is %d. You win!%n", dealerHandTotal);
-                scanner.close();
-                System.exit(0);
-            } else if (dealerHandTotal == 21) {
-                System.out.println("Dealer wins.");
-                scanner.close();
-                System.exit(0);
-            }
+            System.out.printf("Dealer chooses to stay.%n%n");
+            System.out.printf("Your total is %d.%nDealer's total is %d.%n", playerHand.currentTotal,
+                    dealerHand.currentTotal);
 
-            System.out.println("Dealer stays.");
-
-            System.out.printf("Your total is: %d%nDealer's total is: %d%n", playerHandTotal, dealerHandTotal);
-
-            if (playerHandTotal > dealerHandTotal) {
+            if (playerHand.currentTotal > dealerHand.currentTotal) {
                 System.out.println("You win!");
             } else {
                 System.out.println("Dealer wins.");
             }
-            scanner.close();
+            keyboard.close();
         }
     }
 
-    static List<Card> dealOpeningHand(Random rand) {
-        List<Card> hand = new ArrayList<>();
-
-        for (int i = 0; i < 2; i++) {
-            hand.add(drawCard(rand));
-        }
-
-        return hand;
-    }
-
-    static Card drawCard(Random rand) {
-        // picks a random int between 0 and 9, then adds 2 to get int between 2 and 11
-        return new Card(rand.nextInt(10) + 2);
-    }
-
-    static void showHand(List<Card> hand, boolean dealerHand) {
-
-        if (dealerHand) {
-            System.out.printf("A %d and a hidden card.%n", hand.get(0).value);
-            System.out.println("His total is hidden too.");
+    static void handeImmediateWin(Hand checkedHand) {
+        if (checkedHand.player) {
+            System.out.println("You win!");
+            System.exit(0);
         } else {
-            System.out.printf("A %d and a %d.%n", hand.get(0).value, hand.get(1).value);
-            int currentHandTotal = countHandTotal(hand);
-            System.out.printf("Your hand total is %d.%n", currentHandTotal);
+            System.out.println("Dealer wins!");
+            System.exit(0);
         }
-        System.out.println();
     }
 
-    static int countHandTotal(List<Card> hand) {
+    static void checkImmediateWin(Hand playerHand, Hand dealerHand) {
+        if (playerHand.currentTotal == 21) {
+            handeImmediateWin(playerHand);
+        } else if (playerHand.currentTotal > 21) {
+            handeImmediateWin(dealerHand);
+        }
+
+        if (dealerHand.currentTotal == 21) {
+            handeImmediateWin(dealerHand);
+        } else if (dealerHand.currentTotal > 21) {
+            handeImmediateWin(playerHand);
+        }
+    }
+
+    static void takeTurn(String action, Hand actionHand) {
+        if (action.equals("hit")) {
+            actionHand.drawCard();
+            if (actionHand.player) {
+                System.out.printf("You drew a %d.%nYour total is %d.%n",
+                        actionHand.cards.get(actionHand.cards.size() - 1).value, actionHand.currentTotal);
+            } else {
+                System.out.printf("Dealer drew a %d.%nDealer's total is %d.%n",
+                        actionHand.cards.get(actionHand.cards.size() - 1).value, actionHand.currentTotal);
+            }
+
+        }
+    }
+
+}
+
+class Card {
+    int value;
+
+    Card(int value) {
+        this.value = value;
+    }
+}
+
+class Hand {
+    List<Card> cards = new ArrayList<>();
+    Random rand = new Random();
+    int currentTotal = 0;
+    boolean player = false;
+
+    Hand(int numberOfCards) {
+        for (int i = 0; i < numberOfCards; i++) {
+            drawCard();
+        }
+        setTotal();
+    }
+
+    void drawCard() {
+        this.cards.add(new Card(rand.nextInt(10) + 2));
+        setTotal();
+    }
+
+    void setTotal() {
         int handTotal = 0;
-        for (Card card : hand) {
+        for (Card card : cards) {
             handTotal += card.value;
         }
-        return handTotal;
-    }
-
-    static class Card {
-        int value;
-
-        Card(int value) {
-            this.value = value;
-        }
+        currentTotal = handTotal;
     }
 }
