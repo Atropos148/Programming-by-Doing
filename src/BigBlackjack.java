@@ -12,10 +12,14 @@ public class BigBlackjack {
         Hand playerHand = new Hand(2);
         playerHand.player = true;
         Hand dealerHand = new Hand(2);
+        dealerHand.cards.get(1).hidden = true;
 
         System.out.printf("You get a %d and a %d.%n", playerHand.cards.get(0).value, playerHand.cards.get(1).value);
+        playerHand.showHand();
         System.out.printf("Your total is %d.%n%n", playerHand.currentTotal);
+
         System.out.printf("Dealer gets a %d and a hidden card.%n", dealerHand.cards.get(0).value);
+        dealerHand.showHand();
         System.out.println("Dealer's total is also hidden.");
 
         checkImmediateWin(playerHand, dealerHand);
@@ -27,22 +31,26 @@ public class BigBlackjack {
             action = keyboard.nextLine();
             if (action.equals("hit")) {
                 takeTurn(action, playerHand);
+                playerHand.showHand();
                 checkImmediateWin(playerHand, dealerHand);
             }
         } while (!action.equals("stay"));
 
         if (action.equals("stay")) {
             System.out.printf("Okay, it's dealer's turn now.%n%n");
+            dealerHand.cards.get(1).hidden = false;
             System.out.printf("His hidden card was a %d.%nHis total is %d.%n%n",
                     dealerHand.cards.get(dealerHand.cards.size() - 1).value, dealerHand.currentTotal);
+            dealerHand.showHand();
             keyboard.nextLine();
 
-            do {
+            while (dealerHand.currentTotal <= 16) {
                 System.out.println("Dealer chooses to hit.");
                 takeTurn("hit", dealerHand);
+                dealerHand.showHand();
                 keyboard.nextLine();
                 checkImmediateWin(playerHand, dealerHand);
-            } while (dealerHand.currentTotal <= 16);
+            }
 
             System.out.printf("Dealer chooses to stay.%n%n");
             System.out.printf("Your total is %d.%nDealer's total is %d.%n", playerHand.currentTotal,
@@ -99,9 +107,11 @@ public class BigBlackjack {
 
 class Card {
     int value;
+    boolean hidden;
 
     Card(int value) {
         this.value = value;
+        this.hidden = false;
     }
 }
 
@@ -129,5 +139,36 @@ class Hand {
             handTotal += card.value;
         }
         currentTotal = handTotal;
+    }
+
+    void showHand() {
+        int cardsVisualRows = 3;
+        StringBuilder[] cardsVisual = new StringBuilder[cardsVisualRows];
+
+        for (int i = 0; i < cardsVisual.length; i++) {
+            cardsVisual[i] = new StringBuilder();
+        }
+
+        for (Card card : this.cards) {
+            int rowIndex = 0;
+
+            if (!card.hidden) {
+                for (int i = 0; i < cardsVisualRows; i++) {
+                    if (rowIndex != 1) {
+                        cardsVisual[rowIndex].append("+--+ ");
+                    } else {
+                        if (card.value > 9) {
+                            cardsVisual[rowIndex].append(String.format("|%d| ", card.value));
+                        } else {
+                            cardsVisual[rowIndex].append(String.format("| %d| ", card.value));
+                        }
+                    }
+                    rowIndex++;
+                }
+            }
+        }
+        for (StringBuilder row : cardsVisual) {
+            System.out.println(row);
+        }
     }
 }
