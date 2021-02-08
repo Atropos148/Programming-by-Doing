@@ -23,6 +23,7 @@ public class Calculator {
 
             String leftSide = expression.substring(0, operationIndex).trim();
             String rightSide = "";
+
             try {
                 rightSide = expression.substring(operationIndex + 1).trim();
                 char operation = expression.charAt(operationIndex);
@@ -48,12 +49,12 @@ public class Calculator {
     }
 
     static double factorial(double number) {
-        double multiply_by = number - Double.valueOf(1);
+        double multiplyBy = number - Double.valueOf(1);
         double result = number;
 
         for (int i = 0; i < number - Double.valueOf(1); i++) {
-            result = result * multiply_by;
-            multiply_by = multiply_by - Double.valueOf(1);
+            result = result * multiplyBy;
+            multiplyBy = multiplyBy - Double.valueOf(1);
         }
         return result;
     }
