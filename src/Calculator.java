@@ -12,7 +12,7 @@ public class Calculator {
             System.out.print("What do you want to calculate? > ");
             String expression = keyboard.nextLine();
 
-            String[] operations = { "+", "-", "*", "/" };
+            String[] operations = { "+", "-", "*", "/", "^", "%", "!" };
             int operationIndex = 0;
 
             for (String operation : operations) {
@@ -22,27 +22,40 @@ public class Calculator {
             }
 
             String leftSide = expression.substring(0, operationIndex).trim();
-            String rightSide = expression.substring(operationIndex + 1).trim();
-            char operation = expression.charAt(operationIndex);
+            String rightSide = "";
+            try {
+                rightSide = expression.substring(operationIndex + 1).trim();
+                char operation = expression.charAt(operationIndex);
+                if (leftSide.length() == 1) {
+                    firstNumber = Double.parseDouble(leftSide);
 
-            if (leftSide.length() == 1) {
-                firstNumber = Double.parseDouble(leftSide);
-
-                if (firstNumber == 0) {
-                    System.out.println("Goodbye.");
-                    keyboard.close();
-                    System.exit(0);
+                    if (firstNumber == 0) {
+                        System.out.println("Goodbye.");
+                        keyboard.close();
+                        System.exit(0);
+                    }
                 }
-            }
 
-            Expression result = new Expression(leftSide, rightSide, operation);
-            System.out.println(result.giveResult());
+                Expression result = new Expression(leftSide, rightSide, operation);
+                System.out.println(result.giveResult());
+            } catch (NumberFormatException e) {
+                firstNumber = Double.parseDouble(leftSide);
+                double result = factorial(firstNumber);
+                System.out.println(result);
+            }
         }
         keyboard.close();
     }
 
-    static double addition(double x, double y) {
-        return x + y;
+    static double factorial(double number) {
+        double multiply_by = number - Double.valueOf(1);
+        double result = number;
+
+        for (int i = 0; i < number - Double.valueOf(1); i++) {
+            result = result * multiply_by;
+            multiply_by = multiply_by - Double.valueOf(1);
+        }
+        return result;
     }
 }
 
@@ -74,9 +87,23 @@ class Expression {
             case '/': {
                 return left / right;
             }
+            case '^': {
+                return exponent(left, right);
+            }
+            case '%': {
+                return left % right;
+            }
             default: {
                 return left + right;
             }
         }
+    }
+
+    double exponent(double left, double right) {
+        double result = left;
+        for (int i = 0; i < right - 1; i++) {
+            result = result * left;
+        }
+        return result;
     }
 }
