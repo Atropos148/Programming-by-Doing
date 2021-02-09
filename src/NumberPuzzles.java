@@ -7,8 +7,10 @@ public class NumberPuzzles {
         do {
             System.out.println("1) Find two digit numbers <= 56 with sums of digits > 10");
             System.out.println("2) Find two digit number minus number reversed which equals sum of digits");
-            System.out.println("3) Quit");
+            System.out.println("3) Find Armstrong numbers");
+            System.out.println("9) Quit");
 
+            System.out.print("Choose > ");
             choice = scanner.nextInt();
             System.out.println();
 
@@ -16,8 +18,10 @@ public class NumberPuzzles {
                 digitTotals();
             } else if (choice == 2) {
                 sumOfDigitsEqualsReverse();
+            } else if (choice == 3) {
+                armstrongNumbers();
             }
-        } while (choice != 3);
+        } while (choice != 9);
 
         scanner.close();
     }
@@ -33,16 +37,8 @@ public class NumberPuzzles {
                 System.out.printf("%d, ", i);
             }
         }
-        System.out.printf("%n%n");
-    }
 
-    static int singleNumberDigitTotal(int number) {
-        int digitTotal = 0;
-        for (int j = 0; j < String.valueOf(number).length(); j++) {
-            int digit = Character.getNumericValue(String.valueOf(number).charAt(j));
-            digitTotal += digit;
-        }
-        return digitTotal;
+        System.out.printf("%n%n");
     }
 
     static void sumOfDigitsEqualsReverse() {
@@ -58,6 +54,41 @@ public class NumberPuzzles {
                         reversedNumber, minusResult, digitTotal);
             }
         }
+
         System.out.printf("%n");
+    }
+
+    static void armstrongNumbers() {
+        for (int i = 100; i < 1000; i++) {
+            int exponentTotal = 0;
+
+            for (int j = 0; j < String.valueOf(i).length(); j++) {
+                int digit = Character.getNumericValue(String.valueOf(i).charAt(j));
+                exponentTotal += exponent(digit, 3);
+            }
+
+            if (exponentTotal == i) {
+                System.out.printf("%d, ", i);
+            }
+        }
+
+        System.out.printf("%n%n");
+    }
+
+    static int exponent(int left, int right) {
+        int result = left;
+        for (int i = 0; i < right - 1; i++) {
+            result = result * left;
+        }
+        return result;
+    }
+
+    static int singleNumberDigitTotal(int number) {
+        int digitTotal = 0;
+        for (int j = 0; j < String.valueOf(number).length(); j++) {
+            int digit = Character.getNumericValue(String.valueOf(number).charAt(j));
+            digitTotal += digit;
+        }
+        return digitTotal;
     }
 }
