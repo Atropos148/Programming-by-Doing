@@ -8,6 +8,7 @@ public class NumberPuzzles {
             System.out.println("1) Find two digit numbers <= 56 with sums of digits > 10");
             System.out.println("2) Find two digit number minus number reversed which equals sum of digits");
             System.out.println("3) Find Armstrong numbers");
+            System.out.println("4) Find 4 numbers");
             System.out.println("9) Quit");
 
             System.out.print("Choose > ");
@@ -20,6 +21,8 @@ public class NumberPuzzles {
                 sumOfDigitsEqualsReverse();
             } else if (choice == 3) {
                 armstrongNumbers();
+            } else if (choice == 4) {
+                findFourNumbers();
             }
         } while (choice != 9);
 
@@ -72,6 +75,32 @@ public class NumberPuzzles {
             }
         }
 
+        System.out.printf("%n%n");
+    }
+
+    static void findFourNumbers() {
+        for (int i = 0; i <= 100; i++) {
+            if (i % 2 == 0) {
+                int numbersTotal = 0;
+
+                int firstNumber = i - 2;
+                int secondNumber = i + 2;
+                int thirdNumber = i / 2;
+                int fourthNumber = i * 2;
+
+                int[] numbers = { firstNumber, secondNumber, thirdNumber, fourthNumber };
+
+                for (int number : numbers) {
+                    numbersTotal += number;
+                }
+
+                if (numbersTotal == 45) {
+                    System.out.printf("%d + %d + %d + %d = 45%n", firstNumber, secondNumber, thirdNumber, fourthNumber);
+                    System.out.printf("%d + 2 = %d - 2 = %d * 2 = %d / 2", firstNumber, secondNumber, thirdNumber,
+                            fourthNumber);
+                }
+            }
+        }
         System.out.printf("%n%n");
     }
 
