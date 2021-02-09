@@ -6,10 +6,10 @@ public class LetterFileMaker {
         try (FileWriter writer = new FileWriter("letter.txt");) {
             int letterWidth = 50;
 
-            String border = printBorder(letterWidth);
-            String stamp = printStampRows(letterWidth);
-            String emptyRow = printEmptyRow(letterWidth);
-            String address = printAddressRows(letterWidth);
+            String border = makeBorder(letterWidth);
+            String stamp = makeStampRows(letterWidth);
+            String emptyRow = makeEmptyRow(letterWidth);
+            String address = makeAddressRows(letterWidth);
             System.out.println(border);
 
             writer.write(border);
@@ -25,14 +25,9 @@ public class LetterFileMaker {
             System.out.println("An error occured.");
             e.printStackTrace();
         }
-
-        //
-        //
-        // printEmptyRow(letterWidth);
-        // printBorder(letterWidth);
     }
 
-    static String printBorder(int letterWidth) {
+    static String makeBorder(int letterWidth) {
         StringBuilder sb = new StringBuilder();
 
         sb.append('+');
@@ -46,7 +41,7 @@ public class LetterFileMaker {
         return sb.toString();
     }
 
-    static String printStampRows(int letterWidth) {
+    static String makeStampRows(int letterWidth) {
         StringBuilder sb = new StringBuilder();
 
         int stampHeight = 3;
@@ -70,7 +65,7 @@ public class LetterFileMaker {
         return sb.toString();
     }
 
-    static String printEmptyRow(int letterWidth) {
+    static String makeEmptyRow(int letterWidth) {
         StringBuilder sb = new StringBuilder();
 
         sb.append(System.getProperty("line.separator"));
@@ -85,7 +80,7 @@ public class LetterFileMaker {
         return sb.toString();
     }
 
-    static String printAddressRows(int letterWidth) {
+    static String makeAddressRows(int letterWidth) {
         StringBuilder sb = new StringBuilder();
 
         int startColumn = 24;
