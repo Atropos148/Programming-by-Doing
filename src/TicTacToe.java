@@ -6,16 +6,20 @@ public class TicTacToe {
     static char[] players = { 'O', 'X' };
     static int currentPlayer = 0;
     static int filledPositions = 0;
+    public static final String PLAYER_WON = "%c wins";
 
     public static void main(String[] args) {
         Scanner keyboard = new Scanner(System.in);
 
         initBoard();
+        System.out.println(board.length);
         displayBoard();
 
         do {
             choosePosition(keyboard);
             displayBoard();
+            checkBoard();
+            // TODO: add board check
             nextPlayer();
         } while (filledPositions < 9);
 
@@ -23,9 +27,10 @@ public class TicTacToe {
     }
 
     public static void initBoard() {
+        int boardSize = 3;
         // fills up the board with blanks
-        for (int r = 0; r < 3; r++)
-            for (int c = 0; c < 3; c++)
+        for (int r = 0; r < boardSize; r++)
+            for (int c = 0; c < boardSize; c++)
                 board[r][c] = ' ';
     }
 
@@ -65,6 +70,66 @@ public class TicTacToe {
         } else {
             System.out.println("That position is taken");
         }
+    }
+
+    public static void checkBoard() {
+        for (char player : players) {
+
+            // row check
+            rowCheck(player);
+
+            // column check
+            columnCheck(player);
+
+            // cross check
+            crossCheck(player);
+
+        }
+    }
+
+    public static void rowCheck(char player) {
+        for (char[] row : board) {
+            int rowPoints = 0;
+            for (char characterAtPosition : row) {
+                if (characterAtPosition == player) {
+                    rowPoints++;
+                }
+
+                if (rowPoints == 3) {
+                    System.out.printf(PLAYER_WON, player);
+                    System.exit(0);
+                }
+            }
+        }
+    }
+
+    public static void columnCheck(char player) {
+        for (int column = 0; column < board.length; column++) {
+            int columnPoints = 0;
+            for (int row = 0; row < board[column].length; row++) {
+                if (board[row][column] == player) {
+                    columnPoints++;
+                }
+            }
+
+            if (columnPoints == 3) {
+                System.out.printf(PLAYER_WON, player);
+                System.exit(0);
+            }
+        }
+    }
+
+    public static void crossCheck(char player) {
+        // assuming 3x3 grid
+
+        boolean topLeft = board[0][0] == player && board[1][1] == player && board[2][2] == player;
+        boolean bottomLeft = board[2][0] == player && board[1][1] == player && board[0][2] == player;
+        // top left start
+        if (topLeft || bottomLeft) {
+            System.out.printf(PLAYER_WON, player);
+            System.exit(0);
+        }
+
     }
 
     public static void displayBoard2() {
