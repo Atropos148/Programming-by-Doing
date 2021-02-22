@@ -19,7 +19,6 @@ public class TicTacToe {
             choosePosition(keyboard);
             displayBoard();
             checkBoard();
-            // TODO: add board check
             nextPlayer();
         } while (filledPositions < 9);
 
@@ -53,16 +52,35 @@ public class TicTacToe {
 
     public static void choosePosition(Scanner keyboard) {
         System.out.printf("%c, choose your location (row column) > ", players[currentPlayer]);
-        String[] chosenPosition = keyboard.nextLine().split(" ");
+        try {
+            String chosenPosition = keyboard.nextLine();
 
-        System.out.println();
+            if (chosenPosition.length() > 1) {
+                String[] splitPosition = chosenPosition.split(" ");
 
-        updateBoard(chosenPosition);
+                int row = Integer.parseInt(splitPosition[0]) - 1;
+                int column = Integer.parseInt(splitPosition[1]) - 1;
+
+                if ((row <= 2 && row >= 0) && (column <= 2 && column >= 0)) {
+                    System.out.println();
+
+                    int[] splitPositionInt = { row, column };
+                    updateBoard(splitPositionInt);
+                } else {
+                    System.out.println("Only type in 2 numbers, between 1 and 3, separated by a space");
+                }
+
+            } else {
+                System.out.println("Only type in 2 numbers, separated by a space");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Only type in 2 numbers, separated by a space");
+        }
     }
 
-    public static void updateBoard(String[] position) {
-        int row = Integer.parseInt(position[0]) - 1;
-        int column = Integer.parseInt(position[1]) - 1;
+    public static void updateBoard(int[] position) {
+        int row = position[0];
+        int column = position[1];
 
         if (board[row][column] == ' ') {
             board[row][column] = players[currentPlayer];
