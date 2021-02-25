@@ -25,3 +25,4 @@ letter.txt
 .idea/vcs.xml
 highscore.txt
 grades_hrdlovic.txt
+src/SortingByOccurence.java
