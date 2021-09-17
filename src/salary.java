@@ -21,7 +21,11 @@ public class salary {
 		System.out.print("How much money do you make? > ");
 		try {
 			double salary = Double.parseDouble(keyboard.nextLine());
-			System.out.printf("%.2f! You deserve that, but per hour!\n", salary);
+			if (salary > 0.0) {
+				System.out.printf("%.2f! You deserve that, but per hour!\n", salary);
+			} else {
+				System.out.printf("%.2f!?! You deserve to more money!\n", salary);
+			}
 		} catch (NumberFormatException e) {
 			System.out.println("So you make ERROR dollars a day?!?");
 		}
